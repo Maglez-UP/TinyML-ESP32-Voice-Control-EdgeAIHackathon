@@ -1,212 +1,182 @@
-# TinyML-ESP32-Voice-Control-EdgeAIHackathon
-TinyML Speech Command Recognition on ESP32 using Edge Impulse for Edge AI Hackathon 2025.
+# **TinyML Speech Command Recognition on ESP32 for Voice Control**
+Real-time, low-power, offline speech recognition using Edge Impulse and TensorFlow Lite for Microcontrollers.
 
-Overview
+---
 
-This project implements a TinyML-based speech command recognition system running entirely on an ESP32 microcontroller with an INMP441 I2S microphone, enabling real-time, offline voice control with ultra-low power consumption.
+## **Overview**
 
-The system is trained and optimized using Edge Impulse, incorporating a tuned MFCC pipeline, a 1D CNN architecture, and EON Compiler quantization to deliver a highly efficient embedded ML solution.
+This project implements a TinyML-based speech command recognition system running entirely on an ESP32 with an INMP441 I2S microphone, enabling real-time, offline voice control with ultra-low power consumption.
 
-The result is a fully on-device speech command recognizer capable of understanding six spoken commands while operating without cloud connectivity, making it ideal for IoT, robotics, home automation, wearables, and remote deployments.
+The model is trained and optimized in Edge Impulse using a tuned MFCC pipeline and a compact 1D CNN architecture. The final quantized model performs fully on-device inference without cloud connectivity.
 
-Features
+---
 
-Real-time on-device inference (266 ms latency)
+## **Features**
 
-High recognition confidence (97.1% average inference confidence)
+* Real-time on-device inference (**266 ms latency**)
+* High recognition confidence (**97.1% inference confidence**)
+* Fully offline (no internet required)
+* Quantized int8 model optimized with EON Compiler
+* Low memory usage (**–37% RAM**, **–27% ROM**)
+* Strong noise rejection (**99.6% confidence**)
+* Works on low-cost ESP32 hardware
 
-Offline operation (no internet required)
+---
 
-Fully quantized model (int8) optimized with EON Compiler
+## **Recognized Commands**
 
-Low memory usage (37% RAM and 27% ROM reduction)
+* `forward`
+* `backward`
+* `left`
+* `right`
+* `stop`
+* `noise`
 
-High noise rejection (99.6% confidence for noise class)
+---
 
-Built with standard, low-cost hardware (ESP32 + MEMS I2S Mic)
+## **Dataset**
 
-Commands Recognized
+* Derived from **Google Speech Commands Dataset**
+* 1,500 curated samples per class
+* Noise augmentation using **Himel’s Python curation script**
+* Train/validation split handled in Edge Impulse
 
-forward
+---
 
-backward
+## **Methodology**
 
-left
+### **1. MFCC Feature Extraction**
 
-right
+Optimized parameters:
 
-stop
+* 20 MFCC coefficients
+* 40 mel filters
+* FFT length: 256
+* Frame length: 17.5 ms
+* Frame stride: 25 ms
+* Pre-emphasis: 0.96
 
-noise (background rejection)
+These settings balance accuracy, spectral richness, and MCU efficiency.
 
-Dataset
+### **2. Neural Network Architecture**
 
-Based on a curated subset of the Google Speech Commands Dataset
+* 1D CNN with **4 convolutional blocks**
+* Batch Normalization + MaxPooling
+* Dense Softmax output
+* Dropout **0.35**
+* Training: **110 epochs**, batch size **32**, LR = 0.0025
 
-1,500 samples per command
+### **3. Deployment Workflow**
 
-Additional noise augmentation using Himel’s Python curation script
+* Post-processing calibration (threshold, FAR, FRR)
+* Quantized to int8
+* EON Compiler optimization
+* Exported as Arduino library
+* Deployed on ESP32 with INMP441 microphone
 
-Dataset split: 70% training, 30% validation
+---
 
-Preprocessing and MFCC extraction performed inside Edge Impulse
+## **Performance**
 
-Methodology
-1. Feature Extraction – MFCC
+### **Testing Performance (Edge Impulse)**
 
-Optimized MFCC parameters:
+* Accuracy: **87.14%**
 
-20 MFCC coefficients
+### **On-Device Inference (ESP32)**
 
-40 mel filterbanks
+* Average confidence: **97.1%**
+* Noise rejection: **99.6%**
+* Latency: **266 ms**
 
-FFT Length: 256
+---
 
-Frame Length: 17.5 ms
+## **Comparison with State-of-the-Art**
 
-Frame Stride: 25 ms
+| Study              | Model                         | Platform         | Accuracy   | Notes                                                        |
+| ------------------ | ----------------------------- | ---------------- | ---------- | ------------------------------------------------------------ |
+| Vygon et al.       | TripletLoss ResNet            | Raspberry Pi 3B+ | 98.56%     | Runs on SBC, not MCU                                         |
+| Sharifuddin et al. | 2D CNN + MFCC                 | Raspberry Pi 3B+ | 95.3%      | More powerful hardware                                       |
+| Sutikno et al.     | CNN + MFCC                    | Raspberry Pi 3   | 90%        | SBC-level resources                                          |
+| Al-Rousan et al.   | FNN + DWT                     | TI DSP Kit       | 98%        | High-end DSP                                                 |
+| Sutikno et al.     | CNN + LSTM                    | Raspberry Pi 3   | 97.8%      | Requires larger memory                                       |
+| **This project**   | **1D CNN + MFCC (Quantized)** | **ESP32 MCU**    | **87.14%** | Fully on-device, 266 ms latency, low power, optimized memory |
 
-Pre-emphasis: 0.96
+---
 
-These values were selected through a trade-off between accuracy, spectral richness, and real-time efficiency.
+## **Hardware Requirements**
 
-2. Neural Network
+* ESP32-WROOM-32
+* INMP441 I2S MEMS microphone
+* USB cable
+* Optional jumper wires / breadboard
 
-A compact but effective 1D CNN architecture:
+---
 
-4 convolutional blocks
+## **Software Requirements**
 
-Batch Normalization
+* Edge Impulse Studio
+* Arduino IDE
+* ESP32 Arduino Core
+* Python 3.x
+* TensorFlow Lite for Microcontrollers
 
-MaxPooling layers
+---
 
-Dense Softmax output layer
+## **Installation & Usage**
 
-Dropout 0.35 to reduce overfitting
+### 1. Clone the repository
 
-Trained for 110 epochs, batch size 32
-
-Optimizer: Adam (0.0025 LR)
-
-3. Deployment Workflow
-
-Post-processing calibration (optimized FAR/FRR, threshold 0.46)
-
-Quantization to int8
-
-EON Compiler optimization
-
-Exported as Arduino Library
-
-Integrated into ESP32 firmware
-
-Running with INMP441 I2S microphone
-
-Performance
-Edge Impulse Testing Performance
-
-Accuracy: 87.14%
-
-Balanced precision, recall, F1-score
-
-On-Device Inference (ESP32)
-
-Average confidence: 97.1%
-
-Noise rejection: 99.6%
-
-Latency: 266 ms total (DSP + NN inference)
-
-Comparison with State-of-the-Art
-
-Your model achieves competitive performance compared to published embedded speech recognition systems, despite using far more limited hardware.
-
-Study	Model	Platform	Accuracy	Notes
-TripletLoss-Res15	TripletLoss ResNet	Raspberry Pi 3B+	98.56%	Runs on SBC, not MCU
-Sharifuddin et al.	2D CNN + MFCC	Raspberry Pi 3B+	95.3%	Higher-power hardware
-Sutikno et al.	CNN + MFCC	Raspberry Pi 3	90%	SBC-level resources
-Al-Rousan et al.	FNN + DWT	TI DSP Kit	98%	High-end DSP
-Sutikno et al.	CNN + LSTM	Raspberry Pi 3	97.8%	Requires larger memory
-This project	1D CNN + MFCC (Quantized)	ESP32 MCU	87.14%	Real-time, ultra-low-power, fully on-device TinyML
-Hardware Requirements
-
-ESP32-WROOM-32 microcontroller
-
-INMP441 I2S MEMS microphone
-
-USB cable
-
-Optional: Breadboard & jumper wires
-
-Software Requirements
-
-Edge Impulse Studio
-
-Arduino IDE
-
-ESP32 Arduino Core
-
-Python 3.x (for dataset curation)
-
-Installation & Usage
-1. Clone this repository
+```
 git clone https://github.com/<your-username>/TinyML-ESP32-Voice-Control
+```
 
-2. Install dependencies
+### 2. Install ESP32 board support in Arduino IDE
 
-Install the ESP32 boards package in Arduino IDE
+### 3. Open and upload the Edge Impulse `.ino` file
 
-Install required Arduino libraries (automatically included in Edge Impulse export)
+* Connect ESP32
+* Select board: “ESP32 Dev Module”
+* Upload
 
-3. Upload Firmware
+### 4. Test the system
 
-Open the .ino file generated by Edge Impulse
+* Open Serial Monitor
+* Speak commands near the microphone
+* Observe predicted labels and confidence values
 
-Select correct ESP32 board
+---
 
-Flash it to the device
+## **Project Structure**
 
-4. Test
-
-Open the serial monitor and speak the commands near the microphone.
-The predicted label and confidence scores will appear in real-time.
-
-Project Structure
-/dataset/         # Curated audio samples (optional)
-/edge_impulse/    # Exported model files
-/firmware/        # Arduino deployment code
-/scripts/         # Himel-based curation scripts
-/docs/            # Figures, matrices, tables, and report sections
+```
+/dataset/          # Curated audio samples (optional)
+/edge_impulse/     # Exported model files
+/firmware/         # Arduino deployment code
+/scripts/          # Himel-based curation scripts
+/docs/             # Figures, graphs, confusion matrices
 README.md
+```
 
-Applications
+---
 
-Offline voice-controlled IoT
+## **Applications**
 
-Low-power robotics
+* Offline voice control for IoT
+* Low-power robotics
+* Assistive devices
+* Smart home interfaces
+* Industrial control
+* Wearables
 
-Industrial automation
+---
 
-Assistive devices
+## **Built With**
 
-Smart home interfaces
-
-Wearables and portable devices
-
-Built With
-
-Edge Impulse
-
-TensorFlow Lite for Microcontrollers
-
-ESP32-WROOM-32
-
-INMP441 I2S Microphone
-
-Arduino IDE
-
-Python (Himel’s dataset curation)
-
-Google Speech Commands Dataset
-
-C/C++ firmware
+* Edge Impulse
+* Himel’s dataset curation script (Python)
+* TensorFlow Lite for Microcontrollers
+* ESP32-WROOM-32
+* INMP441 I2S Microphone
+* Arduino IDE
+* Google Speech Commands Dataset
+* C/C++
