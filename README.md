@@ -127,7 +127,7 @@ These settings balance accuracy, spectral richness, and MCU efficiency.
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/<your-username>/TinyML-ESP32-Voice-Control
+git clone [https://github.com/<your-username>/TinyML-ESP32-Voice-Control](https://github.com/Maglez-UP/TinyML-ESP32-Voice-Control-EdgeAIHackathon)
 ```
 
 ### 2. Install ESP32 board support in Arduino IDE
