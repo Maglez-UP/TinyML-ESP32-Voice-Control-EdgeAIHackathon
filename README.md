@@ -233,11 +233,9 @@ If connected to a robot, the commands will control its motion in real time.
 ## **Project Structure**
 
 ```
-/dataset/         # Curated audio samples (optional)
-/edge_impulse/    # Exported model files
-/firmware/        # Arduino deployment code
-/scripts/         # Himel-based curation scripts
-/docs/            # Figures, matrices, paper sections
+/data_speech_commands/         # Audio samples (optional)
+/edge_impulse/                 # Exported model files
+/Arduino_script/               # Arduino deployment code
 README.md
 ```
 
