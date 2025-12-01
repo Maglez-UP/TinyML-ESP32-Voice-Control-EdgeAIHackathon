@@ -216,7 +216,7 @@ This TinyML system is suitable for embedded voice control in:
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/<your-username>/TinyML-ESP32-Voice-Control
+git clone https://github.com/Maglez-UP/TinyML-ESP32-Voice-Control-EdgeAIHackathon
 ```
 
 ### 2. Install ESP32 support in Arduino IDE
